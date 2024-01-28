@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type Handler struct {
@@ -30,6 +31,11 @@ func (h *Handler) HandlerCreateUser(w http.ResponseWriter, r *http.Request) {
 		utils.RespondWithError(w, 400, fmt.Sprintf("Error parsing JSON: %v", err))
 		return
 	}
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(params.Password), bcrypt.DefaultCost)
+	if err != nil {
+		utils.RespondWithError(w, 500, fmt.Sprintf("Couldn't hash password: %v", err))
+		return
+	}
 	user, err := h.Cfg.DB.CreateUser(r.Context(), database.CreateUserParams{
 		ID:        uuid.New(),
 		CreatedAt: time.Now().UTC(),
@@ -37,7 +43,7 @@ func (h *Handler) HandlerCreateUser(w http.ResponseWriter, r *http.Request) {
 		FirstName: params.FirstName,
 		LastName:  params.LastName,
 		Email:     params.Email,
-		Password:  params.Password,
+		Password:  string(hashedPassword),
 	})
 	if err != nil {
 		utils.RespondWithError(w, 400, fmt.Sprintf("Couldn't create user %v", err))
