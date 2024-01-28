@@ -43,5 +43,5 @@ func (h *Handler) HandlerCreateUser(w http.ResponseWriter, r *http.Request) {
 		utils.RespondWithError(w, 400, fmt.Sprintf("Couldn't create user %v", err))
 		return
 	}
-	utils.RespondWithJSON(w, 200, user)
+	utils.RespondWithJSON(w, 200, utils.DatabaseUserToUser(user))
 }
