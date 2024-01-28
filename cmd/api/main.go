@@ -3,9 +3,12 @@ package main
 import (
 	"database/sql"
 	"log"
+	"net/http"
 	"os"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/joho/godotenv"
+	_ "github.com/lib/pq"
 )
 
 func main() {
@@ -22,5 +25,14 @@ func main() {
 	if err != nil {
 		log.Fatal("can't connect to the database", err)
 	}
-	// db := database.New(conn)
+	router := chi.NewRouter()
+	server := http.Server{
+		Handler: router,
+		Addr:    ":" + portStr,
+	}
+	log.Printf("Server running on port %v", portStr)
+	err = server.ListenAndServe()
+	if err != nil {
+		log.Fatal(err)
+	}
 }

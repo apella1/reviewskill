@@ -7,7 +7,7 @@ CREATE TABLE
         first_name TEXT NOT NULL,
         last_name TEXT NOT NULL,
         email TEXT UNIQUE NOT NULL,
-        password TEXT NOT NULL,
+        password TEXT NOT NULL
     );
 
 -- +goose Down
