@@ -12,3 +12,6 @@ main
 
 # test binary
 *.test
+
+# Active connectin query file
+Reviewskill.session.sql
