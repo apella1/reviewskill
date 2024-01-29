@@ -46,7 +46,7 @@ func (h *Handler) HandlerCreateUser(w http.ResponseWriter, r *http.Request) {
 		Password:  string(hashedPassword),
 	})
 	if err != nil {
-		utils.RespondWithError(w, 400, fmt.Sprintf("Couldn't create user %v", err))
+		utils.RespondWithError(w, 400, "User with the email exists!")
 		return
 	}
 	utils.RespondWithJSON(w, 200, utils.DatabaseUserToUser(user))
