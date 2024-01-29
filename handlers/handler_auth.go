@@ -38,7 +38,7 @@ func (h *Handler) LoginUser(w http.ResponseWriter, r *http.Request) {
 	}
 	user, err := h.Cfg.DB.GetUserByEmail(r.Context(), params.Email)
 	if err != nil {
-		utils.RespondWithError(w, 400, fmt.Sprintf("Error fetching user: %v", err))
+		utils.RespondWithError(w, 400, "Invalid credentials!")
 		return
 	}
 	if !ComparePasswords(user.Password, params.Password) {
