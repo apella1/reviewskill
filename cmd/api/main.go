@@ -48,6 +48,7 @@ func main() {
 	v1Router := chi.NewRouter()
 	v1Router.Post("/create_user", handler.HandlerCreateUser)
 	v1Router.Post("/login", handler.LoginUser)
+	v1Router.Get("/get_user", handler.GetUserByJWT)
 	router.Mount("/v1", v1Router)
 	server := http.Server{
 		Handler: router,
