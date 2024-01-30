@@ -8,6 +8,7 @@ import (
 	"reviewskill/config"
 	"reviewskill/handlers"
 	"reviewskill/internal/database"
+	"reviewskill/middleware"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/cors"
@@ -33,6 +34,9 @@ func main() {
 	apiCfg := config.ApiConfig{
 		DB: db,
 	}
+	authHandler := middleware.MiddlewareHandler{
+		Cfg: &apiCfg,
+	}
 	handler := handlers.Handler{
 		Cfg: &apiCfg,
 	}
@@ -48,7 +52,7 @@ func main() {
 	v1Router := chi.NewRouter()
 	v1Router.Post("/create_user", handler.HandlerCreateUser)
 	v1Router.Post("/login", handler.LoginUser)
-	v1Router.Get("/get_user", handler.GetUserByJWT)
+	v1Router.Get("/get_user", authHandler.AuthMiddleware(handler.GetUserByJWT))
 	router.Mount("/v1", v1Router)
 	server := http.Server{
 		Handler: router,

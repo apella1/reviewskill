@@ -29,7 +29,7 @@ type MiddlewareHandler struct {
 	Cfg *config.ApiConfig
 }
 
-func (h *MiddlewareHandler) MiddlewareAuth(handler AuthenticatedHandler) http.HandlerFunc {
+func (h *MiddlewareHandler) AuthMiddleware(handler AuthenticatedHandler) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		tokenStr, err := GetJWTToken(r.Header)
 		if err != nil {
