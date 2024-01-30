@@ -53,6 +53,7 @@ func main() {
 	v1Router.Post("/create_user", handler.HandlerCreateUser)
 	v1Router.Post("/login", handler.LoginUser)
 	v1Router.Get("/get_user", authHandler.AuthMiddleware(handler.GetUserByJWT))
+	v1Router.Put("/users/{id}/profile_image", authHandler.AuthMiddleware(handler.UploadProfileImage))
 	router.Mount("/v1", v1Router)
 	server := http.Server{
 		Handler: router,

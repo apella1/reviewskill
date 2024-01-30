@@ -3,12 +3,14 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"reviewskill/config"
 	"reviewskill/internal/database"
 	"reviewskill/utils"
 	"time"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -50,4 +52,42 @@ func (h *Handler) HandlerCreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	utils.RespondWithJSON(w, 200, utils.DatabaseUserToUser(user))
+}
+
+func (h *Handler) UploadProfileImage(w http.ResponseWriter, r *http.Request, user database.User) {
+	userIDStr := chi.URLParam(r, "id")
+	userID, err := uuid.Parse(userIDStr)
+	if err != nil {
+		http.Error(w, "Invalid user ID", http.StatusBadRequest)
+		return
+	}
+	if user.ID != userID {
+		http.Error(w, "User ID does not match authenticated user", http.StatusUnauthorized)
+		return
+	}
+	err = r.ParseMultipartForm(1000)
+	if err != nil {
+		http.Error(w, "Maximum image size is 1MB", http.StatusBadRequest)
+		return
+	}
+	file, _, err := r.FormFile("profile_image")
+	if err != nil {
+		http.Error(w, "An error occurred while retrieving the file", http.StatusBadRequest)
+		return
+	}
+	defer file.Close()
+	fileBytes, err := io.ReadAll(file)
+	if err != nil {
+		http.Error(w, "An error occurred while reading the file.", http.StatusBadRequest)
+		return
+	}
+	_, err = h.Cfg.DB.SaveProfileImage(r.Context(), database.SaveProfileImageParams{
+		ID:           userID,
+		ProfileImage: fileBytes,
+	})
+	if err != nil {
+		http.Error(w, "An error occurred while saving the image", http.StatusInternalServerError)
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("Profile image uploaded successfully"))
 }

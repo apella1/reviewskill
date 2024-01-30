@@ -14,3 +14,9 @@ RETURNING *;
 
 -- name: GetUserByEmail :one
 SELECT * FROM users WHERE email = $1;
+
+-- name: SaveProfileImage :one
+UPDATE users
+SET profile_image = $1
+WHERE id = $2
+RETURNING *;

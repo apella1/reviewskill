@@ -24,7 +24,7 @@ INSERT INTO
         password
     )
 VALUES ($1,$2,$3,$4,$5,$6,$7)
-RETURNING id, created_at, updated_at, first_name, last_name, email, password
+RETURNING id, created_at, updated_at, first_name, last_name, email, password, profile_image
 `
 
 type CreateUserParams struct {
@@ -56,12 +56,13 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		&i.LastName,
 		&i.Email,
 		&i.Password,
+		&i.ProfileImage,
 	)
 	return i, err
 }
 
 const getUserByEmail = `-- name: GetUserByEmail :one
-SELECT id, created_at, updated_at, first_name, last_name, email, password FROM users WHERE email = $1
+SELECT id, created_at, updated_at, first_name, last_name, email, password, profile_image FROM users WHERE email = $1
 `
 
 func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error) {
@@ -75,6 +76,35 @@ func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error
 		&i.LastName,
 		&i.Email,
 		&i.Password,
+		&i.ProfileImage,
+	)
+	return i, err
+}
+
+const saveProfileImage = `-- name: SaveProfileImage :one
+UPDATE users
+SET profile_image = $1
+WHERE id = $2
+RETURNING id, created_at, updated_at, first_name, last_name, email, password, profile_image
+`
+
+type SaveProfileImageParams struct {
+	ProfileImage []byte
+	ID           uuid.UUID
+}
+
+func (q *Queries) SaveProfileImage(ctx context.Context, arg SaveProfileImageParams) (User, error) {
+	row := q.db.QueryRowContext(ctx, saveProfileImage, arg.ProfileImage, arg.ID)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.FirstName,
+		&i.LastName,
+		&i.Email,
+		&i.Password,
+		&i.ProfileImage,
 	)
 	return i, err
 }
