@@ -5,10 +5,25 @@
 package database
 
 import (
+	"database/sql"
 	"time"
 
 	"github.com/google/uuid"
 )
+
+type Flashcard struct {
+	ID              uuid.UUID
+	CreatedAt       time.Time
+	UpdatedAt       time.Time
+	Title           string
+	Body            string
+	Tags            []string
+	LastReviewedAt  sql.NullTime
+	ReviewCount     sql.NullInt32
+	CorrectCount    sql.NullInt32
+	DifficultyLevel sql.NullInt32
+	UserID          uuid.UUID
+}
 
 type User struct {
 	ID           uuid.UUID
