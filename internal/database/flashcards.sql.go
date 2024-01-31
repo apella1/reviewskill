@@ -20,7 +20,6 @@ INSERT INTO
         id,
         created_at,
         updated_at,
-        updated_at,
         title,
         body,
         tags,
@@ -30,7 +29,7 @@ INSERT INTO
         difficulty_level,
         user_id
     )
-VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
 RETURNING id, created_at, updated_at, title, body, tags, last_reviewed_at, review_count, correct_count, difficulty_level, user_id
 `
 
@@ -38,7 +37,6 @@ type CreateFlashcardParams struct {
 	ID              uuid.UUID
 	CreatedAt       time.Time
 	UpdatedAt       time.Time
-	UpdatedAt_2     time.Time
 	Title           string
 	Body            string
 	Tags            []string
@@ -54,7 +52,6 @@ func (q *Queries) CreateFlashcard(ctx context.Context, arg CreateFlashcardParams
 		arg.ID,
 		arg.CreatedAt,
 		arg.UpdatedAt,
-		arg.UpdatedAt_2,
 		arg.Title,
 		arg.Body,
 		pq.Array(arg.Tags),
