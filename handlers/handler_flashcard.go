@@ -39,3 +39,12 @@ func (h *Handler) HandlerCreateFlashcard(w http.ResponseWriter, r *http.Request,
 	}
 	utils.RespondWithJSON(w, http.StatusCreated, utils.DatabaseFlashcardToFlashcard(flashcard))
 }
+
+func (h *Handler) HandlerFetchUserFlashcards(w http.ResponseWriter, r *http.Request, user database.User) {
+	flashcards, err := h.Cfg.DB.FetchUserFlashcards(r.Context(), user.ID)
+	if err != nil {
+		utils.RespondWithError(w, http.StatusBadRequest, fmt.Sprintf("Couldn't fetch user flashcards!: %v", err))
+		return
+	}
+	utils.RespondWithJSON(w, http.StatusOK, utils.DatabaseFlashcardsToFlashcards(flashcards))
+}

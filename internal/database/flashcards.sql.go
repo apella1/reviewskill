@@ -77,3 +77,42 @@ func (q *Queries) CreateFlashcard(ctx context.Context, arg CreateFlashcardParams
 	)
 	return i, err
 }
+
+const fetchUserFlashcards = `-- name: FetchUserFlashcards :many
+SELECT id, created_at, updated_at, title, body, tags, last_reviewed_at, review_count, correct_count, difficulty_level, user_id FROM flashcards WHERE user_id = $1
+`
+
+func (q *Queries) FetchUserFlashcards(ctx context.Context, userID uuid.UUID) ([]Flashcard, error) {
+	rows, err := q.db.QueryContext(ctx, fetchUserFlashcards, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Flashcard
+	for rows.Next() {
+		var i Flashcard
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.Title,
+			&i.Body,
+			pq.Array(&i.Tags),
+			&i.LastReviewedAt,
+			&i.ReviewCount,
+			&i.CorrectCount,
+			&i.DifficultyLevel,
+			&i.UserID,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}

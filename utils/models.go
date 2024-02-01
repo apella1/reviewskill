@@ -61,3 +61,11 @@ func DatabaseFlashcardToFlashcard(dbFlashcard database.Flashcard) Flashcard {
 		UserID:          dbFlashcard.UserID,
 	}
 }
+
+func DatabaseFlashcardsToFlashcards(dbFlashcards []database.Flashcard) []Flashcard {
+	flashcards := []Flashcard{}
+	for _, dbFlashcard := range dbFlashcards {
+		flashcards = append(flashcards, Flashcard(dbFlashcard))
+	}
+	return flashcards
+}
