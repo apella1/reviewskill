@@ -18,3 +18,8 @@ RETURNING *;
 
 -- name: FetchUserFlashcards :many
 SELECT * FROM flashcards WHERE user_id = $1;
+
+-- name: DeleteFlashcard :exec
+DELETE FROM flashcards
+WHERE id = $1
+AND user_id = $2;

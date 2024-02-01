@@ -56,6 +56,7 @@ func main() {
 	v1Router.Put("/users/{id}/profile_image", authHandler.AuthMiddleware(handler.UploadProfileImage))
 	v1Router.Post("/create_flashcard", authHandler.AuthMiddleware(handler.HandlerCreateFlashcard))
 	v1Router.Get("/flashcards", authHandler.AuthMiddleware(handler.HandlerFetchUserFlashcards))
+	v1Router.Delete("/flashcards/{id}", authHandler.AuthMiddleware(handler.HandlerDeleteFlashcard))
 	router.Mount("/v1", v1Router)
 	server := http.Server{
 		Handler: router,

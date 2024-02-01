@@ -8,7 +8,9 @@ import (
 	"reviewskill/utils"
 	"time"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5"
 )
 
 func (h *Handler) HandlerCreateFlashcard(w http.ResponseWriter, r *http.Request, user database.User) {
@@ -47,4 +49,24 @@ func (h *Handler) HandlerFetchUserFlashcards(w http.ResponseWriter, r *http.Requ
 		return
 	}
 	utils.RespondWithJSON(w, http.StatusOK, utils.DatabaseFlashcardsToFlashcards(flashcards))
+}
+
+func (h *Handler) HandlerDeleteFlashcard(w http.ResponseWriter, r *http.Request, user database.User) {
+	flashcardIDstr := chi.URLParam(r, "id")
+	flashcardID, err := uuid.Parse(flashcardIDstr)
+	if err != nil {
+		utils.RespondWithError(w, http.StatusForbidden, "Invalid flashcard ID")
+	}
+	err = h.Cfg.DB.DeleteFlashcard(r.Context(), database.DeleteFlashcardParams{
+		ID:     flashcardID,
+		UserID: user.ID,
+	})
+	if err != nil {
+		if err == pgx.ErrNoRows {
+			utils.RespondWithError(w, http.StatusNotFound, "Flash card not found or already deleted!")
+		} else {
+			utils.RespondWithError(w, http.StatusBadRequest, fmt.Sprintf("Couldn't delete flashcard: %v", err))
+		}
+	}
+	utils.RespondWithJSON(w, http.StatusOK, "Deleted flashcard successfully")
 }

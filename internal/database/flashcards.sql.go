@@ -78,6 +78,22 @@ func (q *Queries) CreateFlashcard(ctx context.Context, arg CreateFlashcardParams
 	return i, err
 }
 
+const deleteFlashcard = `-- name: DeleteFlashcard :exec
+DELETE FROM flashcards
+WHERE id = $1
+AND user_id = $2
+`
+
+type DeleteFlashcardParams struct {
+	ID     uuid.UUID
+	UserID uuid.UUID
+}
+
+func (q *Queries) DeleteFlashcard(ctx context.Context, arg DeleteFlashcardParams) error {
+	_, err := q.db.ExecContext(ctx, deleteFlashcard, arg.ID, arg.UserID)
+	return err
+}
+
 const fetchUserFlashcards = `-- name: FetchUserFlashcards :many
 SELECT id, created_at, updated_at, title, body, tags, last_reviewed_at, review_count, correct_count, difficulty_level, user_id FROM flashcards WHERE user_id = $1
 `
