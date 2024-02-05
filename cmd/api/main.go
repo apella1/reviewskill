@@ -23,7 +23,14 @@ func main() {
 	if portStr == "" {
 		log.Fatal("No port found!")
 	}
-	dbUrl := os.Getenv("DB_URL")
+	env := os.Getenv("ENVIRONMENT")
+	var dbUrl string
+	if env == "development" {
+		dbUrl = os.Getenv("DB_URL")
+
+	} else {
+		dbUrl = os.Getenv("DATABASE_URL")
+	}
 	if dbUrl == "" {
 		log.Fatal("No database url found!")
 	}
@@ -37,6 +44,7 @@ func main() {
 	}
 	defer conn.Close()
 	db := database.New(conn)
+
 	apiCfg := config.ApiConfig{
 		DB: db,
 	}
