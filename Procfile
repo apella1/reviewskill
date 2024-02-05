@@ -1,1 +1,1 @@
-web: reviewskill
+web: /bin/api
