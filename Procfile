@@ -1,1 +1,1 @@
-web: ./bin/api
+web: go run cmd/api/main.go
