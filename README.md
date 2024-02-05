@@ -2,8 +2,8 @@
 
 ## Summary
 
-- ReviewSkill is a cutting-edge learning companion designed to enhance knowledge retention through intuitive review sessions and spaced repetition. This user-friendly application empowers learners to comprehensively review and reinforce concepts from various subjects.
-- With a seamless interface, users can easily input topics, set review intervals, and receive timely reminders for optimal memory reinforcement. Whether you're preparing for exams or aiming for continuous learning, ReviewSkill transforms the learning experience by making spaced repetition a personalized and effective part of your educational journey.
+ReviewSkill is a cutting-edge learning companion designed to enhance knowledge retention through intuitive review sessions and spaced repetition. This user-friendly application empowers learners to comprehensively review and reinforce concepts from various subjects.
+With a seamless interface, users can easily input topics, set review intervals, and receive timely reminders for optimal memory reinforcement. Whether you're preparing for exams or aiming for continuous learning, ReviewSkill transforms the learning experience by making spaced repetition a personalized and effective part of your educational journey.
 
 ## Links
 
