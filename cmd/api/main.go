@@ -14,6 +14,7 @@ import (
 	"github.com/go-chi/cors"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
+	"github.com/pressly/goose/v3"
 )
 
 func main() {
@@ -28,8 +29,13 @@ func main() {
 	}
 	conn, err := sql.Open("postgres", dbUrl)
 	if err != nil {
-		log.Fatal("can't connect to the database", err)
+		log.Fatal("Can't connect to the database", err)
 	}
+	err = goose.Up(conn, "sql/schema")
+	if err != nil {
+		log.Fatalf("Failed to run migrations: %v", err)
+	}
+	defer conn.Close()
 	db := database.New(conn)
 	apiCfg := config.ApiConfig{
 		DB: db,
